@@ -1,21 +1,3 @@
-/*
-*  Copyright (c) WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
-*
-*  WSO2 Inc. licenses this file to you under the Apache License,
-*  Version 2.0 (the "License"); you may not use this file except
-*  in compliance with the License.
-*  You may obtain a copy of the License at
-*
-*    http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing,
-* software distributed under the License is distributed on an
-* "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-* KIND, either express or implied.  See the License for the
-* specific language governing permissions and limitations
-* under the License.
-*/
-
 package org.wso2.balana.samples.image.filtering;
 
 import org.wso2.balana.attr.AttributeValue;
@@ -33,39 +15,27 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Sample attribute finder module
+ * Created by farazath on 4/10/15.
  */
-public class SampleAttributeFinderModule extends AttributeFinderModule{
+public class FirstAttributeFinderModule extends AttributeFinderModule{
 
     private URI defaultSubjectId;
 
-    public SampleAttributeFinderModule() {
-
+    public FirstAttributeFinderModule(){
         try {
             defaultSubjectId = new URI("urn:oasis:names:tc:xacml:1.0:subject:subject-id");
         } catch (URISyntaxException e) {
-           //ignore
+            //ignore
         }
-
     }
 
     @Override
-    public Set<String> getSupportedCategories() {
-        Set<String> categories = new HashSet<String>();
-        categories.add("urn:oasis:names:tc:xacml:1.0:subject-category:access-subject");
-        return categories;
+    public boolean isDesignatorSupported() {
+        return true;
     }
 
     @Override
-    public Set getSupportedIds() {
-        Set<String> ids = new HashSet<String>();
-        ids.add("http://wso2.org/attribute/roleNames");
-        return ids;   
-    }
-
-    @Override
-    public EvaluationResult findAttribute(URI attributeType, URI attributeId, String issuer,
-                                                            URI category, EvaluationCtx context) {
+    public EvaluationResult findAttribute(URI attributeType, URI attributeId, String issuer, URI category, EvaluationCtx context) {
         String roleName = null;
         List<AttributeValue> attributeValues = new ArrayList<AttributeValue>();
 
@@ -81,26 +51,37 @@ public class SampleAttributeFinderModule extends AttributeFinderModule{
         if (roleName != null) {
             attributeValues.add(new StringAttribute(roleName));
         }
-        System.out.println("Simple Attribute Finder Module found the attributes !!!");
+
+        System.out.println("First Attribute Finder Module found the attributes !!!");
         return new EvaluationResult(new BagAttribute(attributeType, attributeValues));
     }
 
     @Override
-    public boolean isDesignatorSupported() {
-        return true;
+    public Set<String> getSupportedCategories() {
+        Set<String> categories = new HashSet<String>();
+        categories.add("urn:oasis:names:tc:xacml:1.0:subject-category:access-subject");
+        return categories;
+    }
+
+    @Override
+    public Set getSupportedIds() {
+        Set<String> ids = new HashSet<String>();
+        ids.add("http://wso2.org/attribute/roleNames");
+        return ids;
     }
 
     private String findRole(String userName){
 
-        System.out.println("Simple Attribute Module was hit !!!");
+        System.out.println("First Attribute Module was hit !!!");
         if(userName.equals("bob")){
-            return "publicUsers";
+            return "InvalidA1";
         } else if(userName.equals("alice")){
-            return "internalUsers";
+            return "InvalidA2";
         } else if(userName.equals("peter")){
-            return "adminUsers";
+            return "InvalidA3";
         }
 
         return null;
     }
+
 }
